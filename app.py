@@ -29,8 +29,8 @@ async def remove_file_before_leave(request: Request, call_next):
 
 @app.get("/v1/{file}", tags=["Version 1"])
 async def get_pokemon_by_id(file: str, api_key: security_router.APIKey = security_router.Depends(security_router.get_api_key)):
-    if os.path.isfile(file):
-        return FileResponse(file)
+    if os.path.isfile('data/{0}.csv'.format(file)):
+        return FileResponse('data/{0}.csv'.format(file), media_type='text/csv')
     return None
 
 
