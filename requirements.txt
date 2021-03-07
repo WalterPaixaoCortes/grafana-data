@@ -1,3 +1,4 @@
+aiofiles
 fastapi==0.54.1
 requests==2.23.0
 uvicorn==0.11.3
