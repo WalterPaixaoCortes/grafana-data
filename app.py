@@ -2,13 +2,14 @@
 '''
     Main file to run the API
 '''
-import base64
-import json
 from time import time
+import os
 
 import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import FileResponse
+
 
 import config
 from routers import security_router
@@ -28,14 +29,9 @@ async def remove_file_before_leave(request: Request, call_next):
 
 @app.get("/v1/{file}", tags=["Version 1"])
 async def get_pokemon_by_id(file: str, api_key: security_router.APIKey = security_router.Depends(security_router.get_api_key)):
-    record = ''
-    try:
-        fil = open('data/{0}.csv'.format(file), 'r').readlines()
-        data = '\n'.join(fil)
-        record = data
-    except:
-        record = 'Error\nError loading file.'
-    return record
+    if os.path.isfile(file):
+        return FileResponse(file)
+    return None
 
 
 if __name__ == "__main__":
