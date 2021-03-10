@@ -9,7 +9,7 @@ from starlette.responses import JSONResponse, RedirectResponse
 from starlette.status import HTTP_403_FORBIDDEN
 from utils import encode
 
-API_KEY = config.API_KEY
+API_KEY = config.GRAFANA_DATA_API_KEY
 API_KEY_NAME = "X-Access-Token"
 COOKIE_DOMAIN = "localhost"
 

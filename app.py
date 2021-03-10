@@ -11,7 +11,6 @@ from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import FileResponse
 
 
-import config
 from routers import security_router
 
 app = FastAPI(title="Grafana Data REST API")
