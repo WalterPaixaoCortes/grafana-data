@@ -54,7 +54,8 @@ def save_to_gsheet(file_name, log, raw_data, save_json):
                 j += 1
                 if j == config.WAIT_INTERVAL:
                     j = 0
-                    time.sleep(2)
+                    log.info('Waiting to respect limits from Google API...')
+                    time.sleep(config.TIME_SLEEP)
 
             if i < len(rows):
                 gsheet.append_sheet(spreadsheet_id, item, {"values": rows[i:]})

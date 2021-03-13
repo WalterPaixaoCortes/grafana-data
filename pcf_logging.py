@@ -3,8 +3,10 @@ from sys import stdout
 from logging import Formatter, getLogger, StreamHandler, DEBUG, INFO, WARNING
 from flask import request
 
+
 class PCFFormatter(Formatter):
     ''' Custom formatter to inject request information into  the log '''
+
     def format(self, record):
         if request:
             record.url = '[{}] '.format(request.url)
@@ -19,6 +21,7 @@ class PCFFormatter(Formatter):
             record.method = ''
             record.data = ''
         return super().format(record)
+
 
 formatter = PCFFormatter(
     '[%(levelname)s] ' +
