@@ -13,14 +13,6 @@ import config
 import database as db
 
 
-def only_number(val):
-    ret = ''
-    for item in val:
-        if item in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
-            ret += item
-    return ret
-
-
 def load_filmes_brasil(name, table_name):
     with open(os.path.join(config.GRAFANA_DATA_FOLDER, name), 'r', encoding='utf-8') as fr:
         pcf_logger.info('Getting database conn...')
@@ -34,6 +26,13 @@ def load_filmes_brasil(name, table_name):
         i = 0
         m = 0
         for item in csvR:
+            for key in item:
+                if item[key] == '':
+                    item[key] = None
+
+            if item['publico_ano_exibicao']:
+                item['publico_ano_exibicao'] = int(
+                    float(item['publico_ano_exibicao']))
             record = FilmesBrasil(**item)
             cnx.add(record)
             i += 1
@@ -61,6 +60,10 @@ def load_brasileirao(name, table_name):
         i = 0
         m = 0
         for item in csvR:
+            for key in item:
+                if item[key] == '':
+                    item[key] = None
+
             record = Brasileirao(**item)
             cnx.add(record)
             i += 1
@@ -88,13 +91,17 @@ def load_brasileirao_stats(name, table_name):
         i = 0
         m = 0
         for item in csvR:
-            if '%' in item['posse_bola']:
+            for key in item:
+                if item[key] == '':
+                    item[key] = None
+
+            if item['posse_bola'] and '%' in item['posse_bola']:
                 item['posse_bola'] = float(item['posse_bola'].replace('%', ''))
             else:
                 if item['posse_bola']:
                     item['posse_bola'] = float(item['posse_bola'])
 
-            if '%' in item['precisao_passe']:
+            if item['precisao_passe'] and '%' in item['precisao_passe']:
                 item['precisao_passe'] = float(
                     item['precisao_passe'].replace('%', ''))
             else:
