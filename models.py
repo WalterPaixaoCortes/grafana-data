@@ -72,3 +72,63 @@ class BrasileiraoStats(Base):
     cartoes_vermelhos = Column(Integer(), nullable=True)
     impedimentos = Column(Integer(), nullable=True)
     escanteios = Column(Integer(), nullable=True)
+
+
+class Netflix(Base):
+    '''Model class for netflix table'''
+
+    __tablename__ = 'netflix'
+
+    id = Column(Integer(), primary_key=True)
+    tipo = Column(String(255), nullable=True)
+    titulo = Column(String(255), nullable=True)
+    diretor = Column(String(255), nullable=True)
+    elenco = Column(String(4000), nullable=True)
+    pais = Column(String(255), nullable=True)
+    data_lancamento = Column(DateTime(), nullable=True)
+    ano_lancamento = Column(Integer(), nullable=True)
+    censura = Column(String(255), nullable=True)
+    duracao = Column(String(255), nullable=True)
+    listado = Column(String(255), nullable=True)
+    descricao = Column(String(4000), nullable=True)
+
+
+class Perfil(Base):
+    '''Model class for perfil table'''
+
+    __tablename__ = 'perfil'
+
+    survey_id = Column(String(20), primary_key=True)
+    respondent_id = Column(String(20), primary_key=True)
+    cnt = Column(Integer(), primary_key=True)
+    question_1 = Column(String(255), nullable=True)
+    question_2 = Column(String(255), nullable=True)
+    question_3 = Column(String(255), nullable=True)
+    question_4 = Column(String(255), nullable=True)
+    question_5 = Column(String(255), nullable=True)
+    question_6 = Column(String(255), nullable=True)
+
+
+class Quadrante(Base):
+    __tablename__ = 'quadrante'
+    id = Column(Integer(), primary_key=True)
+    survey_id = Column(String(20), primary_key=True)
+    respondent_id = Column(String(20), primary_key=True)
+    question_7 = Column(String(255), nullable=True)
+    question_8 = Column(String(255), nullable=True)
+    question_14 = Column(String(255), nullable=True)
+    question_15 = Column(String(255), nullable=True)
+    question_17 = Column(String(255), nullable=True)
+    topico = Column(String(255), nullable=True)
+
+
+class SurveyData(Base):
+    __tablename__ = 'survey_data'
+    id = Column(Integer(), primary_key=True)
+    respondent = Column(String(100), nullable=True)
+    question = Column(String(4000), nullable=True)
+    category = Column(String(4000), nullable=True)
+    answer = Column(String(4000), nullable=True)
+    application = Column(String(100), nullable=True)
+    survey_name = Column(String(100), nullable=True)
+    load_date = Column(DateTime(), nullable=True)

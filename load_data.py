@@ -7,7 +7,7 @@ import traceback
 
 from sqlalchemy import func, and_, desc, asc
 
-from models import BrasileiraoStats, Brasileirao, FilmesBrasil
+from models import BrasileiraoStats, Brasileirao, FilmesBrasil, Netflix, Perfil, Quadrante
 from pcf_logging import pcf_logger
 import config
 import database as db
@@ -109,6 +109,103 @@ def load_brasileirao_stats(name, table_name):
                     item['precisao_passe'] = float(item['precisao_passe'])
 
             record = BrasileiraoStats(**item)
+            cnx.add(record)
+            i += 1
+            m += 1
+            if i == config.DB_COMMIT_BATCH:
+                cnx.commit()
+                pcf_logger.info(
+                    '{0} records added to {1} table.'.format(m, table_name))
+                i = 0
+
+        cnx.commit()
+        pcf_logger.info('Data loaded into {0}...'.format(table_name))
+
+
+def load_netflix(name, table_name):
+    with open(os.path.join(config.GRAFANA_DATA_FOLDER, name), 'r', encoding='utf-8') as fr:
+        pcf_logger.info('Getting database conn...')
+        cnx = db.get_db()
+
+        pcf_logger.info('Deleting data from {0} table...'.format(table_name))
+        cnx.query(Netflix).delete()
+
+        pcf_logger.info('Loading rows...')
+        csvR = csv.DictReader(fr)
+        i = 0
+        m = 0
+        for item in csvR:
+            for key in item:
+                if item[key] == '':
+                    item[key] = None
+
+            item['id'] = item['id'].replace('s', '')
+
+            record = Netflix(**item)
+            cnx.add(record)
+            i += 1
+            m += 1
+            if i == config.DB_COMMIT_BATCH:
+                cnx.commit()
+                pcf_logger.info(
+                    '{0} records added to {1} table.'.format(m, table_name))
+                i = 0
+
+        cnx.commit()
+        pcf_logger.info('Data loaded into {0}...'.format(table_name))
+
+
+def load_perfil(name, table_name):
+    with open(os.path.join(config.GRAFANA_DATA_FOLDER, name), 'r', encoding='utf-8') as fr:
+        pcf_logger.info('Getting database conn...')
+        cnx = db.get_db()
+
+        pcf_logger.info('Deleting data from {0} table...'.format(table_name))
+        cnx.query(Perfil).delete()
+
+        pcf_logger.info('Loading rows...')
+        csvR = csv.DictReader(fr)
+        i = 0
+        m = 0
+        for item in csvR:
+            for key in item:
+                if item[key] == '':
+                    item[key] = None
+
+            record = Perfil(**item)
+            cnx.add(record)
+            i += 1
+            m += 1
+            if i == config.DB_COMMIT_BATCH:
+                cnx.commit()
+                pcf_logger.info(
+                    '{0} records added to {1} table.'.format(m, table_name))
+                i = 0
+
+        cnx.commit()
+        pcf_logger.info('Data loaded into {0}...'.format(table_name))
+
+
+def load_quadrante(name, table_name):
+    with open(os.path.join(config.GRAFANA_DATA_FOLDER, name), 'r', encoding='utf-8') as fr:
+        pcf_logger.info('Getting database conn...')
+        cnx = db.get_db()
+
+        pcf_logger.info('Deleting data from {0} table...'.format(table_name))
+        cnx.query(Quadrante).delete()
+
+        pcf_logger.info('Loading rows...')
+        csvR = csv.DictReader(fr)
+        i = 0
+        m = 0
+        for item in csvR:
+            for key in item:
+                if item[key] == '':
+                    item[key] = None
+
+            item['id'] = m
+
+            record = Quadrante(**item)
             cnx.add(record)
             i += 1
             m += 1
