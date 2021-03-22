@@ -132,3 +132,15 @@ class SurveyData(Base):
     application = Column(String(100), nullable=True)
     survey_name = Column(String(100), nullable=True)
     load_date = Column(DateTime(), nullable=True)
+
+
+class NetflixViewHistory(Base):
+    __tablename__ = 'netflix_view_history'
+    id = Column(Integer(), primary_key=True)
+    conta = Column(String(100), nullable=True)
+    perfil = Column(String(100), nullable=True)
+    tipo = Column(String(20), nullable=True)
+    titulo = Column(String(255), nullable=True)
+    temporada = Column(String(255), nullable=True)
+    episodio = Column(String(255), nullable=True)
+    load_date = Column(DateTime(), nullable=True)
