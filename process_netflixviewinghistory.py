@@ -18,7 +18,6 @@ db.init()
 
 
 def load_data(name: str, clean: str):
-    raw_data = []
     dbcon = db.get_db()
 
     id = dbcon.query(func.Max(NetflixViewHistory.id)).scalar()
@@ -27,53 +26,66 @@ def load_data(name: str, clean: str):
     else:
         id += 1
 
-    pcf_logger.info('Processing file {0}'.format(name))
-    with open(os.path.join(config.GRAFANA_DATA_FOLDER, name), 'r', encoding='utf-8') as fr:
-        csvR = csv.DictReader(fr)
-        metadata = (name.replace('.csv', '')).split('_')
-        regex = r"^(.*):(.*):(.*)$"
-        for item in csvR:
-            record = {
-                'id': id,
-                'conta': metadata[0],
-                'perfil': metadata[1],
-            }
+    for file in os.listdir(os.path.join(config.GRAFANA_DATA_FOLDER, name)):
+        pcf_logger.info('Processing file {0}'.format(file))
+        raw_data = []
+        with open(os.path.join(config.GRAFANA_DATA_FOLDER, name, file), 'r', encoding='utf-8') as fr:
+            csvR = csv.DictReader(fr)
+            metadata = (file.replace('.csv', '')).split('_')
+            regex = r"^((.*):\s([T|P|K]\w*\s\d*):\s(.*))|((.*):\s(.*):\s(.*))$"
+            for item in csvR:
+                record = {
+                    'id': id,
+                    'conta': metadata[0],
+                    'perfil': metadata[1]
+                }
 
-            match = re.search(regex, item['Title'], re.MULTILINE)
+                if item['Date']:
+                    pts = item['Date'].split('/')
+                    record['load_date'] = datetime.datetime(
+                        int(pts[2]), int(pts[1]), int(pts[0]), 0, 0, 0)
 
-            if match:
-                record['tipo'] = 'Série'
-                record['titulo'] = match.group(1)
-                record['temporada'] = match.group(2)
-                record['episodio'] = match.group(3)
-            else:
-                record['tipo'] = 'Filme'
-                record['titulo'] = item['Title']
-                record['temporada'] = None
-                record['episodio'] = None
+                match = re.search(regex, item['Title'], re.MULTILINE)
 
-            raw_data.append(record)
-            id += 1
+                if match:
+                    record['tipo'] = 'Série'
+                    if match.group(1):
+                        record['titulo'] = match.group(2)
+                        record['temporada'] = match.group(3)
+                        record['episodio'] = match.group(4)
+                    else:
+                        record['titulo'] = match.group(6)
+                        record['temporada'] = match.group(7)
+                        record['episodio'] = match.group(8)
+                else:
+                    record['tipo'] = 'Filme'
+                    record['titulo'] = item['Title']
+                    record['temporada'] = None
+                    record['episodio'] = None
 
-    pcf_logger.info('Saving into database...')
+                raw_data.append(record)
+                id += 1
 
-    if clean.upper() == 'SIM':
-        dbcon.query(NetflixViewHistory).filter(and_(NetflixViewHistory.conta ==
-                                                    metadata[0], NetflixViewHistory.perfil == metadata[1])).delete()
+        pcf_logger.info('Saving into database...')
 
-    i = 1
-    for item in raw_data:
-        try:
-            elem = NetflixViewHistory(**item)
-            dbcon.add(elem)
-            i += 1
-            if i % 10 == 0:
-                dbcon.commit()
-                pcf_logger.info('Saved {0} records.'.format(i))
-        except:
-            pcf_logger.info(item)
+        if clean.upper() == 'SIM':
+            dbcon.query(NetflixViewHistory).filter(and_(NetflixViewHistory.conta ==
+                                                        metadata[0], NetflixViewHistory.perfil == metadata[1])).delete()
 
-    dbcon.commit()
+        j = 1
+        for item in raw_data:
+            try:
+                elem = NetflixViewHistory(**item)
+                dbcon.add(elem)
+                j += 1
+                if j % 10 == 0:
+                    dbcon.commit()
+                    pcf_logger.info('Saved {0} records.'.format(j))
+            except:
+                pcf_logger.info(item)
+
+        dbcon.commit()
+        id += 1
 
 
 if __name__ == "__main__":

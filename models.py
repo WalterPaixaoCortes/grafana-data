@@ -144,3 +144,23 @@ class NetflixViewHistory(Base):
     temporada = Column(String(255), nullable=True)
     episodio = Column(String(255), nullable=True)
     load_date = Column(DateTime(), nullable=True)
+
+
+class Artigos(Base):
+    __tablename__ = 'artigos'
+    id = Column(Integer(), primary_key=True)
+    titulo = Column(String(400), nullable=True)
+    url = Column(String(400), nullable=True)
+    data = Column(DateTime(), nullable=True)
+    tag = Column(String(400), nullable=True)
+
+
+class Combustivel(Base):
+    __tablename__ = "combustivel"
+    id = Column(Integer(), primary_key=True)
+    data = Column(DateTime(), nullable=True)
+    percorrida = Column(Float(), nullable=True)
+    alcool = Column(Float(), nullable=True)
+    gasolina = Column(Float(), nullable=True)
+    valor = Column(Float(), nullable=True)
+    litros = Column(Float(), nullable=True)
