@@ -6,9 +6,7 @@ from database import Base
 
 class FilmesBrasil(Base):
     '''Model class for filmes_brasil table'''
-
     __tablename__ = 'filmes_brasil'
-
     id = Column(Integer(), primary_key=True)
     ano_exibicao = Column(Integer(), nullable=True)
     titulo = Column(String(255), nullable=True)
@@ -23,9 +21,7 @@ class FilmesBrasil(Base):
 
 class Brasileirao(Base):
     '''Model class for filmes_brasil table'''
-
     __tablename__ = 'brasileirao'
-
     id = Column(Integer(), primary_key=True)
     rodada = Column(String(255), nullable=True)
     data = Column(DateTime(), nullable=True)
@@ -44,9 +40,7 @@ class Brasileirao(Base):
 
 class BrasileiraoStats(Base):
     '''Model class for filmes_brasil table'''
-
     __tablename__ = 'brasileirao_stats'
-
     id = Column(Integer(), primary_key=True)
     rodada = Column(String(255), nullable=True)
     data = Column(DateTime(), nullable=True)
@@ -76,9 +70,7 @@ class BrasileiraoStats(Base):
 
 class Netflix(Base):
     '''Model class for netflix table'''
-
     __tablename__ = 'netflix'
-
     id = Column(Integer(), primary_key=True)
     tipo = Column(String(255), nullable=True)
     titulo = Column(String(255), nullable=True)
@@ -95,9 +87,7 @@ class Netflix(Base):
 
 class Perfil(Base):
     '''Model class for perfil table'''
-
     __tablename__ = 'perfil'
-
     survey_id = Column(String(20), primary_key=True)
     respondent_id = Column(String(20), primary_key=True)
     cnt = Column(Integer(), primary_key=True)
@@ -164,3 +154,38 @@ class Combustivel(Base):
     gasolina = Column(Float(), nullable=True)
     valor = Column(Float(), nullable=True)
     litros = Column(Float(), nullable=True)
+
+
+class VendaLivros(Base):
+    __tablename__ = "venda_livros"
+    id = Column(Integer(), primary_key=True)
+    titulo = Column(String(200), nullable=True)
+    genero = Column(String(200), nullable=True)
+    cliente = Column(String(200), nullable=True)
+    valor = Column(Float(), nullable=True)
+
+
+class ImdbMovies(Base):
+    __tablename__ = "imdb_movies"
+    codigo_imdb = Column(String(20), primary_key=True)
+    titulo_filme = Column(String(200), nullable=True)
+    titulo_filme_original = Column(String(200), nullable=True)
+    ano_lancamento = Column(Integer(), nullable=True)
+    data_lancamento = Column(String(30), nullable=True)
+    genero = Column(String(200), nullable=True)
+    duracao = Column(Integer(), nullable=True)
+    pais = Column(String(200), nullable=True)
+    lingua = Column(String(200), nullable=True)
+    diretor = Column(String(200), nullable=True)
+    escritor = Column(String(200), nullable=True)
+    empresa_produtora = Column(String(200), nullable=True)
+    atores = Column(String(1000), nullable=True)
+    descricao = Column(String(1200), nullable=True)
+    media_votos = Column(Float(), nullable=True)
+    quantidade_votos = Column(Float(), nullable=True)
+    custo_producao = Column(String(200), nullable=True)
+    eua_lucro_bruto = Column(String(200), nullable=True)
+    lucro_bruto = Column(String(200), nullable=True)
+    metascore = Column(Float(), nullable=True)
+    qtde_notas_usuarios = Column(Float(), nullable=True)
+    qtde_notas_criticos = Column(Float(), nullable=True)
