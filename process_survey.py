@@ -19,7 +19,18 @@ db.init()
 
 def load_data(name: str):
     raw_data = []
-    id = 1
+
+    pcf_logger.info("Getting last id")
+    dbcon = db.get_db()
+
+    id = dbcon.query(func.Max(SurveyData.id)).scalar()
+    if id is None:
+        id = 1
+    else:
+        id += 1
+
+    pcf_logger.info('Next id = {0}'.format(id))
+
     pcf_logger.info('Processing file {0}'.format(name))
     with open(os.path.join(config.GRAFANA_DATA_FOLDER, name), 'r', encoding='utf-8') as fr:
         csvR = csv.DictReader(fr)
@@ -53,7 +64,6 @@ def load_data(name: str):
             mbr += 1
 
     pcf_logger.info('Saving into database...')
-    dbcon = db.get_db()
 
     dbcon.query(SurveyData).filter(and_(SurveyData.application ==
                                         metadata[0], SurveyData.survey_name == metadata[1])).delete()

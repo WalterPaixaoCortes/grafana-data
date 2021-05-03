@@ -296,8 +296,12 @@ def load_imdb_movies(name, table_name):
         pcf_logger.info('Getting database conn...')
         cnx = db.get_db()
 
-        pcf_logger.info('Deleting data from {0} table...'.format(table_name))
-        cnx.query(ImdbMovies).delete()
+        pcf_logger.info('Finding id''s from {0} table...'.format(table_name))
+        raw_already_saved = cnx.query(ImdbMovies).count()
+        pcf_logger.info('Records = {0}...'.format(raw_already_saved))
+
+        #pcf_logger.info('Deleting data from {0} table...'.format(table_name))
+        # cnx.query(ImdbMovies).delete()
 
         pcf_logger.info('Loading rows...')
         csvR = csv.DictReader(fr)
@@ -308,15 +312,19 @@ def load_imdb_movies(name, table_name):
                 if item[key] == '':
                     item[key] = None
 
-            record = ImdbMovies(**item)
-            cnx.add(record)
-            i += 1
             m += 1
-            if i == config.DB_COMMIT_BATCH:
-                cnx.commit()
-                pcf_logger.info(
-                    '{0} records added to {1} table.'.format(m, table_name))
-                i = 0
+            if m > raw_already_saved:
+                i += 1
+                record = ImdbMovies(**item)
+                cnx.add(record)
+                if i == config.DB_COMMIT_BATCH:
+                    try:
+                        cnx.commit()
+                    except:
+                        cnx.rollback()
+                    pcf_logger.info(
+                        '{0} records added to {1} table.'.format(m, table_name))
+                    i = 0
 
         cnx.commit()
         pcf_logger.info('Data loaded into {0}...'.format(table_name))
