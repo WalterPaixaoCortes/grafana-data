@@ -11,5 +11,5 @@ if 'GRAFANA_DATA_FOLDER' in os.environ:
 SEPARATOR = ','
 
 DB_HOST = 'postgresql-22468-0.cloudclusters.net'
-DB_SERVER = f'postgresql+psycopg2://wpcortes:Wrpc.1975@{DB_HOST}:22468/grafana'
+DB_SERVER = f'postgresql+psycopg2://{os.environ["DB_USR"]}:{os.environ["DB_PWD"]}@{DB_HOST}:22468/grafana'
 DB_COMMIT_BATCH = 10
